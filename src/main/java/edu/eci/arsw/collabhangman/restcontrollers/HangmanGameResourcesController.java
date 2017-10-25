@@ -65,11 +65,11 @@ public class HangmanGameResourcesController {
     public ResponseEntity<?> tryLetterInGame(@PathVariable Integer gameid, @RequestBody HangmanLetterAttempt hga){
         try {
 
-            String tmp =gameServices.addLetterToGame(gameid, hga.getLetter());
-            
+            String tmp = gameServices.addLetterToGame(gameid, hga.getLetter());
             LOG.log(Level.INFO, "Getting letter from client {0}:{1}", new Object[]{hga.getUsername(), hga.getLetter()});
-
-
+            
+            msmt.convertAndSend("/topic/wupdate." + gameid, tmp);
+            
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (GameServicesException ex) {
             Logger.getLogger(HangmanGameResourcesController.class.getName()).log(Level.SEVERE, null, ex);
@@ -82,11 +82,13 @@ public class HangmanGameResourcesController {
     public ResponseEntity<?> attemptAWord(@PathVariable Integer gameid, @RequestBody HangmanWordAttempt hwa){
         try {
 
-            boolean win=gameServices.guessWord(hwa.getUsername(),gameid, hwa.getWord());
+            boolean win = gameServices.guessWord(hwa.getUsername(),gameid, hwa.getWord());
             
             LOG.log(Level.INFO, "Getting word from client {0}:{1}", new Object[]{hwa.getUsername(), hwa.getWord()});
-            
-            
+            if (win) {
+                msmt.convertAndSend("/topic/winner." + gameid, hwa.getUsername());
+                msmt.convertAndSend("/topic/wupdate." + gameid, hwa.getWord());
+            }
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (GameServicesException ex) {
             Logger.getLogger(HangmanGameResourcesController.class.getName()).log(Level.SEVERE, null, ex);

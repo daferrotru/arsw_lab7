@@ -4,6 +4,22 @@ var app = (function () {
     
     var stompClient = null;
     var gameid = 0;
+    
+    var putPlayerData = function(player) {
+        nombreJugador = player.name;
+        var content = '<div><img src="' + player.photoUrl + '"/></div>' + "</div>"+
+        "<div>" + nombreJugador + "</div>";
+        document.getElementById("datosjugador").innerHTML = content;
+    };
+    
+    var updateWord = function(eventBody) {
+        document.getElementById("palabra").innerHTML = "<h1>" + eventBody.body + "</h1>";
+    };
+    
+    var putWinner = function(eventBody) {
+        var content = "<div>Estado: Ganado!</div>" + "<div>Ganador: " + eventBody.body + "</div>";
+        document.getElementById("status").innerHTML = content;
+    };
 
     return {
 
@@ -19,7 +35,6 @@ var app = (function () {
                     function (data) {
                         alert(data["responseText"]);
                     }
-
             );
 
 
@@ -31,9 +46,11 @@ var app = (function () {
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function (frame) {
 
-                console.log('Connected: ' + frame);
+                //console.log('Connected: ' + frame);
 
                 //subscriptions
+                stompClient.subscribe("/topic/wupdate." + gameid, updateWord);
+                stompClient.subscribe("/topic/winner." + gameid, putWinner);
             
             });
 
@@ -43,9 +60,9 @@ var app = (function () {
 
             var id = gameid;
 
-            var hangmanLetterAttempt = {letter: $("#caracter").val(), username: "?????"};
+            var hangmanLetterAttempt = {letter: $("#caracter").val(), username: nombreJugador};
 
-            console.info("Gameid:"+gameid+",Sending v2:"+JSON.stringify(hangmanLetterAttempt));
+            //console.info("Gameid:"+gameid+",Sending v2:"+JSON.stringify(hangmanLetterAttempt));
 
 
             jQuery.ajax({
@@ -64,7 +81,9 @@ var app = (function () {
 
         sendWord: function () {
             
-            var hangmanWordAttempt = {word: $("#adivina").val(), username: "??????"};
+            var hangmanWordAttempt = {word: $("#adivina").val(), username: nombreJugador};
+            
+            //console.info("Gameid:"+gameid+",Sending v2:"+JSON.stringify(hangmanWordAttempt));
             
             var id = gameid;
 
@@ -80,7 +99,12 @@ var app = (function () {
             });
 
             
-        }
+        },
+        
+        getPlayer: function() {
+            var idPlayer = $("#playerid").val();
+            jQuery.get("/users/" + idPlayer, putPlayerData);
+        } 
 
     };
 

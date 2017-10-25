@@ -36,23 +36,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <div class="centeredinput">
             Identificador del jugador: <input id="playerid" type="text"/><br>
-            <button onclick="">Consultar datos jugador</button>
+            <button onclick="app.getPlayer()">Consultar datos jugador</button>
         </div>
         
         
         
-        <div id="datosjugador" class="userdata">
-            <div>
-                <img src="http://www.your3dsource.com/images/personsshadowthumb.jpg"/>
-            </div>
-            <div>
-                Nombre:????      
-            </div>             
+        <div id="datosjugador" class="userdata">           
         </div>
 
         <div class="centeredinput">
             Identificador del Juego: <input id="gameid" type="number"/><br>
-            <button onclick="app.loadWord()">Ingresar a partida</button>
+            <button onclick="app.loadWord(); app.wsconnect()">Ingresar a partida</button>
         </div>
         
         
@@ -66,9 +60,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             </div>
             <div>
                 Ganador: Ninguno.            
-            </div> 
-           
-            
+            </div>
         </div>
 
 
