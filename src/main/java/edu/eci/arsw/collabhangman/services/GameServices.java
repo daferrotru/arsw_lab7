@@ -25,6 +25,7 @@ import edu.eci.arsw.collabhangman.model.game.entities.User;
 import edu.eci.arsw.collabhangman.persistence.PersistenceException;
 import edu.eci.arsw.collabhangman.persistence.UsersRepository;
 import edu.eci.arsw.collabhangman.persistence.WordsRepository;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -54,15 +55,18 @@ public class GameServices {
     }
     
     public User loadUserData(int userid) throws GameServicesException{
-        try {
-            return usersRepository.getUserByID(userid);
-        } catch (PersistenceException ex) {
-            throw new GameServicesException("Error loading User Data:"+ex.getLocalizedMessage(),ex);
-        }
+       return usersRepository.findById(userid);
+        
     }
     
-    public Set<User> getAllUsers(){
-        return usersRepository.getAllUsers();
+    
+    public Set<User> getAllUsers() throws GameServicesException{
+        //return usersRepository.getAllUsers();
+        return new HashSet<>();
+    }
+    
+    public List<User> findByScore(Integer score){
+        return usersRepository.findByScore(score);
     }
     
     /**
@@ -145,7 +149,5 @@ public class GameServices {
     public String getGameWinner(int gameid) throws GameServicesException{
         return cache.getGame(gameid).getWinnerName();
     }
-    
-  
-    
+
 }

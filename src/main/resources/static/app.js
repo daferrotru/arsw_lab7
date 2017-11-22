@@ -5,10 +5,22 @@ var app = (function () {
     var stompClient = null;
     var gameid = 0;
     
+    var compare = function(firstScore, secondScore) {
+        var firstScoreD = new Date(firstScore.date);
+        var secondScoreD = new Date(secondScore.date);
+        return firstScoreD < secondScoreD;
+    };
+    
+    var getLastScore = function(scores) {
+        scores.sort(compare);
+        return scores.length > 0 ? scores[0] : "no hay puntajes";
+    };
+    
     var putPlayerData = function(player) {
         nombreJugador = player.name;
-        var content = '<div><img src="' + player.photoUrl + '"/></div>' + "</div>"+
-        "<div>" + nombreJugador + "</div>";
+        var scr = getLastScore(player.scores);
+        var content = '<div><img src="' + player.photoUrl + '"/></div>' + "</div>" + "<div>" +
+        nombreJugador + "</div>" + "<div> Ultimo Puntaje: " + scr.value + " fecha: "+ scr.date + "</div>";
         document.getElementById("datosjugador").innerHTML = content;
     };
     
@@ -19,6 +31,13 @@ var app = (function () {
     var putWinner = function(eventBody) {
         var content = "<div>Estado: Ganado!</div>" + "<div>Ganador: " + eventBody.body + "</div>";
         document.getElementById("status").innerHTML = content;
+    };
+    
+    var putScores = function(users) {
+      users.forEach((usr) => {
+          var content = "<div>" + usr.name + "</div>";
+          $("#datospuntaje").append(content);
+      });
     };
 
     return {
@@ -104,7 +123,11 @@ var app = (function () {
         getPlayer: function() {
             var idPlayer = $("#playerid").val();
             jQuery.get("/users/" + idPlayer, putPlayerData);
-        } 
+        },
+
+        loadScores: function (){
+            jQuery.get("/users/scores/100", putScores);
+        }
 
     };
 

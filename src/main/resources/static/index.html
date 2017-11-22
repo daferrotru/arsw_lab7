@@ -31,8 +31,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
     
-    <body>
+    <body onload="app.loadScores()">
         <h1 class="title">AHORCADO MULTIJUGADOR</h1>
+        
+        <div id="datospuntaje" class="userdata">Usuarios con puntajes >= 100:</div>
 
         <div class="centeredinput">
             Identificador del jugador: <input id="playerid" type="text"/><br>

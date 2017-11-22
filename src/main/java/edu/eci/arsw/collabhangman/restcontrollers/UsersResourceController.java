@@ -38,10 +38,18 @@ public class UsersResourceController {
         }
     }
     
+    @RequestMapping(method = RequestMethod.GET, path = "/scores/{score}")
+    public ResponseEntity<?> findByScore(@PathVariable int score) {
+        System.out.println(score);
+        return new ResponseEntity<>(gameServices.findByScore(score), HttpStatus.ACCEPTED);
+    }
+    
     @Autowired
     public void setGameServices(GameServices gameServices) {
         this.gameServices = gameServices;
     }
+    
+    
     
     
 }
