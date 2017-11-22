@@ -1,0 +1,16 @@
+Las llaves para acceder a redis son:
+
+game:1
+game:2
+
+los atributos son
+game:1 completeWord "happiness"
+game:1 guessedWord
+game:1 status
+game:1 winner
+
+
+game:2 completeWord "foot"
+game:2 guessedWord
+game:2 status
+game:2 winner
